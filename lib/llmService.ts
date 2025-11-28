@@ -98,12 +98,13 @@ function createMealRecommendationPrompt(
 - Medical Conditions: ${profile.medicalConditions || "None"}
 
 **Task:**
-Generate 5 personalized meal recommendations that align with the user's health goals and dietary preferences. Each meal should:
-1. Match their dietary preference (${profile.dietaryPreference})
-2. Support their health goal (${profile.healthGoal})
-3. Be appropriate for their activity level (${profile.activityLevel})
-4. Avoid any mentioned allergies
-5. Include realistic nutritional information (calories, protein, carbs, fats in grams)
+Generate 5 personalized South Indian meal recommendations that align with the user's health goals and dietary preferences. Each meal should:
+1. Be EXCLUSIVELY from South Indian cuisine (e.g., dosa, idli, sambar, rasam, biryani, chettinad, upma, appam, uttapam, pongal, etc.)
+2. Match their dietary preference (${profile.dietaryPreference})
+3. Support their health goal (${profile.healthGoal})
+4. Be appropriate for their activity level (${profile.activityLevel})
+5. Avoid any mentioned allergies
+6. Include realistic nutritional information (calories, protein, carbs, fats in grams)
 
 **Response Format (MUST BE VALID JSON):**
 {
@@ -131,14 +132,16 @@ Generate 5 personalized meal recommendations that align with the user's health g
 }
 
 **Important Guidelines:**
-- Use appropriate emojis for meal images (🍗, 🥗, 🍝, 🐟, 🥙, etc.)
-- Ensure meals are culturally diverse and appealing
+- ALL meals MUST be authentic South Indian dishes only
+- Use appropriate emojis for meal images (🥞 for dosa/uttapam, 🍛 for curry, 🍚 for rice dishes, 🥣 for upma/pongal, etc.)
+- Focus on traditional South Indian ingredients: rice, lentils, coconut, curry leaves, tamarind, etc.
 - Calories should align with activity level and health goals
 - If goal is weight-loss, keep meals under 450 calories
 - If goal is muscle-gain, prioritize protein (>30g per meal)
 - If goal is energy, ensure adequate carbs (>50g per meal)
 - Avoid any ingredients related to allergies
 - Make descriptions appetizing and motivating
+- Include regional variations (Kerala, Tamil Nadu, Karnataka, Andhra Pradesh cuisines)
 
 Return ONLY the JSON object, no additional text.`;
 }

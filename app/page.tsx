@@ -1,8 +1,62 @@
+"use client";
+
 import Link from "next/link";
+import { useState, useEffect } from "react";
+import { calculateBMI, getBMICategory, type HealthProfile } from "@/lib/recommendationEngine";
 
 export default function Home() {
+  const [bmiData, setBmiData] = useState<{ bmi: number; category: string } | null>(null);
+
+  useEffect(() => {
+    // Check if user has health profile data
+    const healthProfileData = localStorage.getItem("healthProfile");
+    if (healthProfileData) {
+      try {
+        const profile: HealthProfile = JSON.parse(healthProfileData);
+        const height = parseFloat(profile.height);
+        const weight = parseFloat(profile.weight);
+
+        if (!isNaN(height) && !isNaN(weight)) {
+          const bmi = calculateBMI(height, weight);
+          const category = getBMICategory(bmi);
+          setBmiData({ bmi, category });
+        }
+      } catch (error) {
+        console.error("Error parsing health profile:", error);
+      }
+    }
+  }, []);
+
   return (
     <div className="container mx-auto px-4 py-16">
+      {/* BMI Display Section - Only show if user has health profile */}
+      {bmiData && (
+        <section className="mb-12 max-w-2xl mx-auto">
+          <div className="p-6 rounded-xl bg-gradient-to-r from-primary-50 to-green-50 dark:from-primary-900/20 dark:to-green-900/20 border-2 border-primary-200 dark:border-primary-800">
+            <div className="text-center">
+              <h3 className="text-lg font-semibold text-gray-700 dark:text-gray-300 mb-3">
+                Your Body Mass Index (BMI)
+              </h3>
+              <div className="flex items-center justify-center gap-6">
+                <div>
+                  <div className="text-5xl font-bold text-primary-600 dark:text-primary-400">
+                    {bmiData.bmi}
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">BMI Score</p>
+                </div>
+                <div className="h-16 w-px bg-gray-300 dark:bg-gray-600"></div>
+                <div>
+                  <div className="text-2xl font-semibold text-gray-800 dark:text-gray-200">
+                    {bmiData.category}
+                  </div>
+                  <p className="text-sm text-gray-600 dark:text-gray-400 mt-1">Category</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
+
       {/* Hero Section */}
       <section className="text-center mb-20">
         <h1 className="text-5xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-primary-600 to-green-600 bg-clip-text text-transparent">

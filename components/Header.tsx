@@ -3,11 +3,18 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import ThemeToggle from "./ThemeToggle";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const pathname = usePathname();
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+  useEffect(() => {
+    // Check if user is authenticated
+    const user = localStorage.getItem("user");
+    setIsAuthenticated(!!user);
+  }, []);
 
   const navItems = [
     { href: "/", label: "Home" },
@@ -46,20 +53,22 @@ export default function Header() {
 
           {/* Right side - Auth & Theme */}
           <div className="flex items-center space-x-4">
-            <div className="hidden md:flex items-center space-x-3">
-              <Link
-                href="/login"
-                className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/register"
-                className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
-              >
-                Get Started
-              </Link>
-            </div>
+            {!isAuthenticated && (
+              <div className="hidden md:flex items-center space-x-3">
+                <Link
+                  href="/login"
+                  className="px-4 py-2 text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="px-4 py-2 bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
             <ThemeToggle />
 
             {/* Mobile menu button */}
@@ -104,22 +113,24 @@ export default function Header() {
                 {item.label}
               </Link>
             ))}
-            <div className="flex flex-col space-y-2 pt-2">
-              <Link
-                href="/login"
-                className="py-2 text-center text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Sign In
-              </Link>
-              <Link
-                href="/register"
-                className="py-2 text-center bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
-                onClick={() => setMobileMenuOpen(false)}
-              >
-                Get Started
-              </Link>
-            </div>
+            {!isAuthenticated && (
+              <div className="flex flex-col space-y-2 pt-2">
+                <Link
+                  href="/login"
+                  className="py-2 text-center text-gray-600 dark:text-gray-300 hover:text-primary-600 dark:hover:text-primary-400 font-medium transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Sign In
+                </Link>
+                <Link
+                  href="/register"
+                  className="py-2 text-center bg-primary-600 text-white rounded-lg hover:bg-primary-700 font-medium transition-colors"
+                  onClick={() => setMobileMenuOpen(false)}
+                >
+                  Get Started
+                </Link>
+              </div>
+            )}
           </div>
         )}
       </nav>
