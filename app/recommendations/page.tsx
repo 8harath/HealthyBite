@@ -306,9 +306,10 @@ export default function RecommendationsPage() {
           <div className={`relative ${regenerating ? 'opacity-50 pointer-events-none' : ''}`}>
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {recommendations.map((meal) => (
-                <div
+                <Link
                   key={meal.id}
-                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
+                  href={`/meal/${meal.id}`}
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all"
                 >
                   <div className="p-6">
                     <div className="text-5xl mb-3">{meal.image}</div>
@@ -338,7 +339,7 @@ export default function RecommendationsPage() {
                     </div>
 
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-2">
+                    <div className="flex flex-wrap gap-2 mb-3">
                       {meal.tags.slice(0, 3).map((tag) => (
                         <span
                           key={tag}
@@ -348,8 +349,12 @@ export default function RecommendationsPage() {
                         </span>
                       ))}
                     </div>
+
+                    <span className="text-sm text-primary-600 dark:text-primary-400 font-medium">
+                      View Details →
+                    </span>
                   </div>
-                </div>
+                </Link>
               ))}
             </div>
           </div>
