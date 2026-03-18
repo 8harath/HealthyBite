@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import type { MealRecommendation, HealthProfile } from "@/lib/recommendationEngine";
@@ -13,14 +13,125 @@ interface Insights {
   nutritionalFocus: string;
 }
 
+function LoadingSkeleton() {
+  return (
+    <div className="container mx-auto px-4 py-12">
+      <div className="max-w-6xl mx-auto">
+        {/* Header skeleton */}
+        <div className="text-center mb-8">
+          <div className="h-10 bg-gray-200 dark:bg-gray-700 rounded-lg w-96 mx-auto mb-4 animate-pulse" />
+          <div className="h-5 bg-gray-200 dark:bg-gray-700 rounded w-80 mx-auto animate-pulse" />
+        </div>
+
+        {/* Health summary skeleton */}
+        <div className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 mb-8 animate-pulse">
+          <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-48 mb-4" />
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {[1, 2, 3, 4].map((i) => (
+              <div key={i} className="space-y-2">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-12" />
+                <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-16" />
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Insights skeleton */}
+        <div className="grid md:grid-cols-2 gap-6 mb-8">
+          {[1, 2].map((i) => (
+            <div key={i} className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 animate-pulse">
+              <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-40 mb-3" />
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-2" />
+              <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4" />
+            </div>
+          ))}
+        </div>
+
+        {/* Meal cards skeleton */}
+        <div className="mb-8">
+          <div className="h-8 bg-gray-200 dark:bg-gray-700 rounded w-64 mb-6 animate-pulse" />
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {[1, 2, 3, 4, 5].map((i) => (
+              <div
+                key={i}
+                className="bg-gray-100 dark:bg-gray-800 rounded-xl p-6 animate-pulse"
+              >
+                <div className="h-12 w-12 bg-gray-200 dark:bg-gray-700 rounded mb-3" />
+                <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2" />
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-full mb-4" />
+                <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-200 dark:bg-gray-700 rounded-lg">
+                  {[1, 2, 3].map((j) => (
+                    <div key={j} className="h-10 bg-gray-300 dark:bg-gray-600 rounded" />
+                  ))}
+                </div>
+                <div className="flex gap-2">
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-16" />
+                  <div className="h-6 bg-gray-200 dark:bg-gray-700 rounded-full w-20" />
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        {/* Loading message */}
+        <div className="text-center mt-8">
+          <div className="inline-flex items-center gap-3 px-6 py-3 bg-primary-50 dark:bg-primary-900/20 rounded-full">
+            <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-primary-600" />
+            <span className="text-primary-700 dark:text-primary-300 font-medium">
+              AI is crafting your personalized meals...
+            </span>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export default function RecommendationsPage() {
   const router = useRouter();
   const [profile, setProfile] = useState<HealthProfile | null>(null);
   const [recommendations, setRecommendations] = useState<MealRecommendation[]>([]);
   const [insights, setInsights] = useState<Insights | null>(null);
   const [loading, setLoading] = useState(true);
+  const [regenerating, setRegenerating] = useState(false);
   const [usedFallback, setUsedFallback] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const generateAIRecommendations = useCallback(async (healthProfile: HealthProfile, isRegenerate = false) => {
+    try {
+      if (isRegenerate) {
+        setRegenerating(true);
+      } else {
+        setLoading(true);
+      }
+      setError(null);
+
+      const response = await fetch("/api/recommendations", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(healthProfile),
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json().catch(() => ({}));
+        throw new Error(errorData.message || "Failed to generate recommendations");
+      }
+
+      const data = await response.json();
+
+      setRecommendations(data.recommendations);
+      setInsights(data.insights || null);
+      setUsedFallback(data.usedFallback || false);
+    } catch (err) {
+      console.error("Error fetching recommendations:", err);
+      setError(err instanceof Error ? err.message : "Failed to generate recommendations. Please try again.");
+    } finally {
+      setLoading(false);
+      setRegenerating(false);
+    }
+  }, []);
 
   useEffect(() => {
     // Check if user is logged in
@@ -42,49 +153,10 @@ export default function RecommendationsPage() {
 
     // Generate AI-powered recommendations
     generateAIRecommendations(healthProfile);
-  }, [router]);
-
-  const generateAIRecommendations = async (healthProfile: HealthProfile) => {
-    try {
-      setLoading(true);
-      setError(null);
-
-      const response = await fetch("/api/recommendations", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(healthProfile),
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to generate recommendations");
-      }
-
-      const data = await response.json();
-
-      setRecommendations(data.recommendations);
-      setInsights(data.insights || null);
-      setUsedFallback(data.usedFallback || false);
-    } catch (err) {
-      console.error("Error fetching recommendations:", err);
-      setError("Failed to generate recommendations. Please try again.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  }, [router, generateAIRecommendations]);
 
   if (loading || !profile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary-600 mx-auto mb-4"></div>
-          <p className="text-gray-600 dark:text-gray-400">
-            Generating your personalized meal recommendations...
-          </p>
-        </div>
-      </div>
-    );
+    return <LoadingSkeleton />;
   }
 
   if (error) {
@@ -204,50 +276,87 @@ export default function RecommendationsPage() {
 
         {/* Recommendations */}
         <div className="mb-8">
-          <h2 className="text-2xl font-bold mb-6">Recommended Meals for You</h2>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {recommendations.map((meal) => (
-              <div
-                key={meal.id}
-                className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg transition-shadow"
-              >
-                <div className="p-6">
-                  <div className="text-5xl mb-3">{meal.image}</div>
-                  <h3 className="text-xl font-bold mb-2">{meal.name}</h3>
-                  <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
-                    {meal.description}
-                  </p>
+          <div className="flex items-center justify-between mb-6">
+            <h2 className="text-2xl font-bold">Recommended Meals for You</h2>
+            <button
+              onClick={() => profile && generateAIRecommendations(profile, true)}
+              disabled={regenerating}
+              className="inline-flex items-center gap-2 px-4 py-2 text-sm font-medium text-primary-600 dark:text-primary-400 bg-primary-50 dark:bg-primary-900/20 rounded-lg hover:bg-primary-100 dark:hover:bg-primary-900/40 transition-colors disabled:opacity-50 disabled:cursor-not-allowed border border-primary-200 dark:border-primary-800"
+            >
+              {regenerating ? (
+                <>
+                  <svg className="animate-spin h-4 w-4" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" fill="none" />
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                  </svg>
+                  Regenerating...
+                </>
+              ) : (
+                <>
+                  <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0 3.181 3.183a8.25 8.25 0 0 0 13.803-3.7M4.031 9.865a8.25 8.25 0 0 1 13.803-3.7l3.181 3.182" />
+                  </svg>
+                  Regenerate
+                </>
+              )}
+            </button>
+          </div>
 
-                  {/* Macros */}
-                  <div className="grid grid-cols-3 gap-2 mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
-                    <div className="text-center">
-                      <p className="text-xs text-gray-500">Calories</p>
-                      <p className="font-bold text-primary-600">{meal.calories}</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-xs text-gray-500">Protein</p>
-                      <p className="font-bold">{meal.protein}g</p>
-                    </div>
-                    <div className="text-center">
-                      <p className="text-xs text-gray-500">Carbs</p>
-                      <p className="font-bold">{meal.carbs}g</p>
-                    </div>
-                  </div>
+          {/* Regenerating overlay */}
+          <div className={`relative ${regenerating ? 'opacity-50 pointer-events-none' : ''}`}>
+            <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {recommendations.map((meal) => (
+                <Link
+                  key={meal.id}
+                  href={`/meal/${meal.id}`}
+                  className="bg-white dark:bg-gray-800 rounded-xl shadow-md border border-gray-200 dark:border-gray-700 overflow-hidden hover:shadow-lg hover:-translate-y-0.5 transition-all"
+                >
+                  <div className="p-6">
+                    <div className="text-5xl mb-3">{meal.image}</div>
+                    <h3 className="text-xl font-bold mb-2">{meal.name}</h3>
+                    <p className="text-gray-600 dark:text-gray-400 text-sm mb-4">
+                      {meal.description}
+                    </p>
 
-                  {/* Tags */}
-                  <div className="flex flex-wrap gap-2">
-                    {meal.tags.slice(0, 2).map((tag) => (
-                      <span
-                        key={tag}
-                        className="px-2 py-1 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full"
-                      >
-                        {tag}
-                      </span>
-                    ))}
+                    {/* Macros */}
+                    <div className="grid grid-cols-4 gap-2 mb-4 p-3 bg-gray-50 dark:bg-gray-900 rounded-lg">
+                      <div className="text-center">
+                        <p className="text-xs text-gray-500">Calories</p>
+                        <p className="font-bold text-primary-600">{meal.calories}</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-gray-500">Protein</p>
+                        <p className="font-bold">{meal.protein}g</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-gray-500">Carbs</p>
+                        <p className="font-bold">{meal.carbs}g</p>
+                      </div>
+                      <div className="text-center">
+                        <p className="text-xs text-gray-500">Fats</p>
+                        <p className="font-bold">{meal.fats}g</p>
+                      </div>
+                    </div>
+
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-2 mb-3">
+                      {meal.tags.slice(0, 3).map((tag) => (
+                        <span
+                          key={tag}
+                          className="px-2 py-1 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full"
+                        >
+                          {tag}
+                        </span>
+                      ))}
+                    </div>
+
+                    <span className="text-sm text-primary-600 dark:text-primary-400 font-medium">
+                      View Details →
+                    </span>
                   </div>
-                </div>
-              </div>
-            ))}
+                </Link>
+              ))}
+            </div>
           </div>
         </div>
 

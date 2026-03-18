@@ -27,194 +27,504 @@ export interface HealthProfile {
 }
 
 const mealDatabase: MealRecommendation[] = [
-  // High Protein South Indian Meals
+  // ===== HIGH PROTEIN MEALS =====
   {
     id: 1,
-    name: "Chicken Chettinad with Brown Rice",
-    description: "Spicy South Indian chicken curry with aromatic spices and brown rice",
-    calories: 480,
-    protein: 42,
-    carbs: 38,
-    fats: 16,
+    name: "Grilled Chicken Breast with Quinoa",
+    description: "Lean protein with complex carbs and mixed vegetables",
+    calories: 450,
+    protein: 45,
+    carbs: 35,
+    fats: 12,
     type: "non-vegetarian",
-    tags: ["high-protein", "muscle-gain", "spicy"],
-    image: "🍛",
+    tags: ["high-protein", "low-fat", "muscle-gain", "lunch", "dinner"],
+    image: "🍗",
   },
   {
     id: 2,
-    name: "Paneer Dosa with Sambar",
-    description: "Crispy dosa stuffed with cottage cheese, served with lentil sambar",
+    name: "Paneer Tikka with Brown Rice",
+    description: "Indian cottage cheese with whole grains and aromatic spices",
     calories: 420,
-    protein: 28,
-    carbs: 42,
-    fats: 14,
+    protein: 25,
+    carbs: 40,
+    fats: 15,
     type: "vegetarian",
-    tags: ["high-protein", "vegetarian", "muscle-gain"],
-    image: "🥞",
+    tags: ["high-protein", "vegetarian", "muscle-gain", "lunch", "dinner"],
+    image: "🧀",
   },
   {
     id: 3,
-    name: "Masala Idli with Coconut Chutney",
-    description: "Steamed rice cakes sautéed with spices and vegetables",
-    calories: 320,
-    protein: 18,
-    carbs: 48,
-    fats: 8,
+    name: "Tofu Stir-Fry with Vegetables",
+    description: "Plant-based protein with colorful bell peppers and broccoli",
+    calories: 350,
+    protein: 20,
+    carbs: 30,
+    fats: 14,
     type: "vegan",
-    tags: ["vegan", "low-calorie", "weight-loss", "breakfast"],
-    image: "🍘",
+    tags: ["vegan", "low-calorie", "weight-loss", "lunch", "dinner"],
+    image: "🥗",
   },
-
-  // Weight Loss South Indian Meals
   {
     id: 4,
-    name: "Fish Curry Kerala Style",
-    description: "Light and tangy fish curry with coconut and tamarind",
-    calories: 350,
-    protein: 38,
-    carbs: 18,
-    fats: 15,
-    type: "pescatarian",
-    tags: ["low-carb", "weight-loss", "high-protein", "omega-3"],
-    image: "🐟",
+    name: "Egg White Omelette with Spinach",
+    description: "Protein-packed omelette with sautéed spinach and mushrooms",
+    calories: 280,
+    protein: 30,
+    carbs: 8,
+    fats: 12,
+    type: "vegetarian",
+    tags: ["high-protein", "low-carb", "weight-loss", "breakfast"],
+    image: "🍳",
   },
   {
     id: 5,
-    name: "Ragi Dosa with Vegetable Sambar",
-    description: "Nutritious finger millet crepe with mixed vegetable lentil stew",
-    calories: 280,
-    protein: 15,
-    carbs: 42,
-    fats: 6,
-    type: "vegan",
-    tags: ["low-calorie", "vegan", "weight-loss", "high-fiber"],
-    image: "🥞",
-  },
-  {
-    id: 6,
-    name: "Vegetable Upma with Mint Chutney",
-    description: "Semolina porridge loaded with vegetables and spices",
-    calories: 260,
-    protein: 12,
-    carbs: 40,
-    fats: 7,
-    type: "vegan",
-    tags: ["low-calorie", "vegan", "weight-loss", "breakfast"],
-    image: "🍚",
+    name: "Turkey & Avocado Wrap",
+    description: "Lean turkey with avocado, lettuce, and whole wheat wrap",
+    calories: 410,
+    protein: 35,
+    carbs: 32,
+    fats: 16,
+    type: "non-vegetarian",
+    tags: ["high-protein", "balanced", "muscle-gain", "lunch"],
+    image: "🌯",
   },
 
-  // Balanced South Indian Meals
+  // ===== WEIGHT LOSS MEALS =====
+  {
+    id: 6,
+    name: "Grilled Salmon with Steamed Broccoli",
+    description: "Omega-3 rich fish with nutrient-dense vegetables",
+    calories: 380,
+    protein: 35,
+    carbs: 15,
+    fats: 20,
+    type: "pescatarian",
+    tags: ["low-carb", "weight-loss", "high-protein", "dinner"],
+    image: "🐟",
+  },
   {
     id: 7,
-    name: "Egg Curry with Malabar Parotta",
-    description: "Spiced egg curry served with flaky layered flatbread",
-    calories: 520,
-    protein: 32,
-    carbs: 55,
-    fats: 18,
-    type: "non-vegetarian",
-    tags: ["balanced", "maintenance", "moderate"],
-    image: "🥚",
+    name: "Greek Salad with Chickpeas",
+    description: "Fresh Mediterranean salad with plant protein and feta",
+    calories: 320,
+    protein: 15,
+    carbs: 28,
+    fats: 16,
+    type: "vegetarian",
+    tags: ["low-calorie", "vegetarian", "weight-loss", "lunch"],
+    image: "🥗",
   },
   {
     id: 8,
-    name: "Bisi Bele Bath",
-    description: "Traditional Karnataka one-pot meal with rice, lentils, and vegetables",
-    calories: 400,
-    protein: 20,
-    carbs: 62,
-    fats: 10,
+    name: "Zucchini Noodles with Marinara",
+    description: "Low-carb pasta alternative with homemade tomato sauce and basil",
+    calories: 180,
+    protein: 8,
+    carbs: 20,
+    fats: 7,
     type: "vegan",
-    tags: ["vegan", "comfort-food", "general-health", "balanced"],
-    image: "🍲",
+    tags: ["low-carb", "vegan", "weight-loss", "low-calorie", "dinner"],
+    image: "🍝",
   },
   {
     id: 9,
-    name: "Thali Meal with Rasam and Rice",
-    description: "Complete South Indian platter with rasam, sambar, vegetables, and rice",
-    calories: 450,
-    protein: 18,
-    carbs: 68,
-    fats: 12,
-    type: "vegetarian",
-    tags: ["vegetarian", "balanced", "general-health"],
-    image: "🍱",
+    name: "Cauliflower Rice Buddha Bowl",
+    description: "Low-carb cauliflower rice with roasted veggies and tahini dressing",
+    calories: 290,
+    protein: 12,
+    carbs: 22,
+    fats: 18,
+    type: "vegan",
+    tags: ["low-carb", "vegan", "weight-loss", "lunch", "dinner"],
+    image: "🥙",
   },
-
-  // High Calorie for Muscle Gain
   {
     id: 10,
-    name: "Mutton Biryani Hyderabadi Style",
-    description: "Aromatic rice layered with spiced mutton and herbs",
-    calories: 680,
-    protein: 48,
-    carbs: 72,
-    fats: 24,
-    type: "non-vegetarian",
-    tags: ["high-protein", "muscle-gain", "high-calorie"],
-    image: "🍛",
+    name: "Grilled Fish Tacos with Slaw",
+    description: "Light fish tacos with crunchy cabbage slaw and lime",
+    calories: 340,
+    protein: 28,
+    carbs: 30,
+    fats: 12,
+    type: "pescatarian",
+    tags: ["weight-loss", "balanced", "dinner"],
+    image: "🌮",
   },
   {
     id: 11,
-    name: "Ghee Roast Dosa with Potato Masala",
-    description: "Crispy dosa roasted in ghee with spiced potato filling",
-    calories: 580,
-    protein: 16,
-    carbs: 78,
-    fats: 24,
-    type: "vegetarian",
-    tags: ["high-calorie", "energy", "vegetarian"],
-    image: "🥞",
+    name: "Cucumber & Hummus Plate",
+    description: "Fresh cucumber rounds with chickpea hummus and cherry tomatoes",
+    calories: 220,
+    protein: 10,
+    carbs: 25,
+    fats: 10,
+    type: "vegan",
+    tags: ["low-calorie", "weight-loss", "snack", "vegan"],
+    image: "🥒",
   },
 
-  // Energy Boosting South Indian Meals
+  // ===== BALANCED / GENERAL HEALTH =====
   {
     id: 12,
-    name: "Rava Pongal with Cashews",
-    description: "Savory semolina porridge with ghee, cashews, and black pepper",
-    calories: 420,
-    protein: 14,
-    carbs: 58,
-    fats: 16,
-    type: "vegetarian",
-    tags: ["energy", "breakfast", "vegetarian"],
-    image: "🍚",
+    name: "Chicken Burrito Bowl",
+    description: "Balanced meal with cilantro-lime rice, black beans, and lean chicken",
+    calories: 520,
+    protein: 38,
+    carbs: 55,
+    fats: 15,
+    type: "non-vegetarian",
+    tags: ["balanced", "general-health", "lunch", "dinner"],
+    image: "🥙",
   },
   {
     id: 13,
-    name: "Pesarattu with Ginger Chutney",
-    description: "Green gram dosa packed with protein and served with spicy chutney",
-    calories: 360,
-    protein: 22,
-    carbs: 52,
+    name: "Vegetable Khichdi",
+    description: "Indian comfort food with lentils, rice, and seasonal vegetables",
+    calories: 380,
+    protein: 18,
+    carbs: 60,
     fats: 8,
-    type: "vegan",
-    tags: ["energy", "vegan", "high-protein", "breakfast"],
-    image: "🥞",
+    type: "vegetarian",
+    tags: ["vegetarian", "comfort-food", "general-health", "lunch", "dinner"],
+    image: "🍲",
   },
   {
     id: 14,
-    name: "Prawn Masala with Appam",
-    description: "Spicy coastal prawn curry with soft rice pancakes",
-    calories: 440,
-    protein: 40,
-    carbs: 38,
-    fats: 14,
-    type: "pescatarian",
-    tags: ["high-protein", "pescatarian", "muscle-gain"],
-    image: "🦐",
+    name: "Mediterranean Grain Bowl",
+    description: "Farro with roasted vegetables, olives, and lemon herb dressing",
+    calories: 430,
+    protein: 16,
+    carbs: 52,
+    fats: 18,
+    type: "vegan",
+    tags: ["balanced", "general-health", "vegan", "lunch"],
+    image: "🥗",
   },
   {
     id: 15,
-    name: "Vegetable Uttapam with Coconut Chutney",
-    description: "Thick rice pancake topped with onions, tomatoes, and peppers",
-    calories: 340,
-    protein: 16,
-    carbs: 54,
-    fats: 8,
+    name: "Dal Tadka with Roti",
+    description: "Yellow lentil curry with whole wheat flatbread and fresh herbs",
+    calories: 400,
+    protein: 18,
+    carbs: 55,
+    fats: 12,
     type: "vegan",
-    tags: ["vegan", "balanced", "general-health"],
-    image: "🥞",
+    tags: ["balanced", "general-health", "vegan", "lunch", "dinner"],
+    image: "🍛",
+  },
+  {
+    id: 16,
+    name: "Chicken Tikka Masala with Rice",
+    description: "Tender chicken in creamy tomato sauce with basmati rice",
+    calories: 550,
+    protein: 35,
+    carbs: 50,
+    fats: 22,
+    type: "non-vegetarian",
+    tags: ["balanced", "general-health", "dinner"],
+    image: "🍛",
+  },
+
+  // ===== MUSCLE GAIN =====
+  {
+    id: 17,
+    name: "Beef Steak with Sweet Potato",
+    description: "High-quality protein with complex carbs and roasted vegetables",
+    calories: 650,
+    protein: 50,
+    carbs: 45,
+    fats: 28,
+    type: "non-vegetarian",
+    tags: ["high-protein", "muscle-gain", "high-calorie", "dinner"],
+    image: "🥩",
+  },
+  {
+    id: 18,
+    name: "Peanut Butter Protein Smoothie Bowl",
+    description: "Calorie-dense smoothie with banana, oats, and mixed nuts",
+    calories: 580,
+    protein: 32,
+    carbs: 65,
+    fats: 22,
+    type: "vegetarian",
+    tags: ["high-calorie", "muscle-gain", "energy", "breakfast"],
+    image: "🥣",
+  },
+  {
+    id: 19,
+    name: "Grilled Chicken & Rice Bowl",
+    description: "Classic bodybuilding meal with seasoned chicken and jasmine rice",
+    calories: 600,
+    protein: 48,
+    carbs: 58,
+    fats: 16,
+    type: "non-vegetarian",
+    tags: ["high-protein", "muscle-gain", "lunch", "dinner"],
+    image: "🍗",
+  },
+  {
+    id: 20,
+    name: "Cottage Cheese & Fruit Bowl",
+    description: "High-protein cottage cheese with mixed berries and honey drizzle",
+    calories: 350,
+    protein: 28,
+    carbs: 35,
+    fats: 10,
+    type: "vegetarian",
+    tags: ["high-protein", "muscle-gain", "breakfast", "snack"],
+    image: "🫐",
+  },
+  {
+    id: 21,
+    name: "Lentil & Chickpea Power Bowl",
+    description: "Protein-packed legume bowl with quinoa and roasted veggies",
+    calories: 480,
+    protein: 26,
+    carbs: 62,
+    fats: 14,
+    type: "vegan",
+    tags: ["high-protein", "muscle-gain", "vegan", "lunch"],
+    image: "🥣",
+  },
+
+  // ===== ENERGY BOOSTING =====
+  {
+    id: 22,
+    name: "Oatmeal with Berries and Almonds",
+    description: "Sustained energy with fiber, antioxidants and healthy fats",
+    calories: 420,
+    protein: 15,
+    carbs: 58,
+    fats: 14,
+    type: "vegan",
+    tags: ["energy", "breakfast", "vegan"],
+    image: "🥣",
+  },
+  {
+    id: 23,
+    name: "Whole Grain Pasta with Vegetables",
+    description: "Complex carbs with roasted seasonal vegetables and olive oil",
+    calories: 480,
+    protein: 18,
+    carbs: 72,
+    fats: 12,
+    type: "vegan",
+    tags: ["energy", "vegan", "lunch", "dinner"],
+    image: "🍝",
+  },
+  {
+    id: 24,
+    name: "Banana Almond Butter Toast",
+    description: "Whole grain toast with almond butter, banana slices, and chia seeds",
+    calories: 380,
+    protein: 12,
+    carbs: 52,
+    fats: 16,
+    type: "vegan",
+    tags: ["energy", "breakfast", "vegan"],
+    image: "🍞",
+  },
+  {
+    id: 25,
+    name: "Sweet Potato & Black Bean Burrito",
+    description: "Energy-dense burrito with roasted sweet potato and spiced black beans",
+    calories: 500,
+    protein: 18,
+    carbs: 68,
+    fats: 16,
+    type: "vegan",
+    tags: ["energy", "vegan", "lunch"],
+    image: "🌯",
+  },
+  {
+    id: 26,
+    name: "Fruit & Nut Trail Mix Bowl",
+    description: "Mixed dried fruits, nuts, and seeds for quick sustained energy",
+    calories: 350,
+    protein: 10,
+    carbs: 45,
+    fats: 18,
+    type: "vegan",
+    tags: ["energy", "snack", "vegan"],
+    image: "🥜",
+  },
+
+  // ===== KETO / LOW CARB =====
+  {
+    id: 27,
+    name: "Bacon & Cheese Stuffed Avocado",
+    description: "Creamy avocado filled with crispy bacon and melted cheese",
+    calories: 420,
+    protein: 22,
+    carbs: 8,
+    fats: 35,
+    type: "non-vegetarian",
+    tags: ["keto", "low-carb", "breakfast", "lunch"],
+    image: "🥑",
+  },
+  {
+    id: 28,
+    name: "Butter Chicken Lettuce Wraps",
+    description: "Rich butter chicken served in crisp lettuce cups instead of naan",
+    calories: 380,
+    protein: 32,
+    carbs: 10,
+    fats: 24,
+    type: "non-vegetarian",
+    tags: ["keto", "low-carb", "dinner"],
+    image: "🥬",
+  },
+  {
+    id: 29,
+    name: "Paneer Bhurji (Scrambled Paneer)",
+    description: "Spiced scrambled cottage cheese with onions, tomatoes, and peppers",
+    calories: 340,
+    protein: 22,
+    carbs: 12,
+    fats: 24,
+    type: "vegetarian",
+    tags: ["keto", "low-carb", "breakfast", "vegetarian"],
+    image: "🧀",
+  },
+  {
+    id: 30,
+    name: "Coconut Curry Shrimp",
+    description: "Creamy coconut curry with tiger shrimp and spinach",
+    calories: 360,
+    protein: 30,
+    carbs: 14,
+    fats: 22,
+    type: "pescatarian",
+    tags: ["keto", "low-carb", "dinner", "pescatarian"],
+    image: "🍤",
+  },
+
+  // ===== PALEO =====
+  {
+    id: 31,
+    name: "Herb-Crusted Baked Salmon",
+    description: "Wild salmon with a fresh herb crust, served with roasted asparagus",
+    calories: 420,
+    protein: 38,
+    carbs: 12,
+    fats: 26,
+    type: "pescatarian",
+    tags: ["paleo", "high-protein", "dinner"],
+    image: "🐟",
+  },
+  {
+    id: 32,
+    name: "Grilled Lamb Chops with Mint Chutney",
+    description: "Tender lamb chops with fresh mint chutney and roasted vegetables",
+    calories: 520,
+    protein: 42,
+    carbs: 15,
+    fats: 32,
+    type: "non-vegetarian",
+    tags: ["paleo", "high-protein", "muscle-gain", "dinner"],
+    image: "🍖",
+  },
+
+  // ===== INDIAN CUISINE =====
+  {
+    id: 33,
+    name: "Rajma Chawal (Kidney Bean Curry with Rice)",
+    description: "Hearty kidney bean curry simmered in spiced tomato gravy with rice",
+    calories: 450,
+    protein: 18,
+    carbs: 65,
+    fats: 12,
+    type: "vegan",
+    tags: ["balanced", "general-health", "energy", "lunch", "dinner"],
+    image: "🍛",
+  },
+  {
+    id: 34,
+    name: "Palak Paneer with Jeera Rice",
+    description: "Creamy spinach curry with cottage cheese and cumin-flavored rice",
+    calories: 460,
+    protein: 22,
+    carbs: 45,
+    fats: 20,
+    type: "vegetarian",
+    tags: ["balanced", "general-health", "vegetarian", "lunch", "dinner"],
+    image: "🍛",
+  },
+  {
+    id: 35,
+    name: "Chole Bhature",
+    description: "Spicy chickpea curry with crispy fried bread — a North Indian classic",
+    calories: 580,
+    protein: 16,
+    carbs: 70,
+    fats: 26,
+    type: "vegan",
+    tags: ["energy", "high-calorie", "lunch"],
+    image: "🫓",
+  },
+  {
+    id: 36,
+    name: "Idli Sambar",
+    description: "Steamed rice cakes with lentil vegetable stew and coconut chutney",
+    calories: 300,
+    protein: 12,
+    carbs: 52,
+    fats: 5,
+    type: "vegan",
+    tags: ["low-fat", "weight-loss", "breakfast", "vegan"],
+    image: "🍚",
+  },
+  {
+    id: 37,
+    name: "Masala Dosa with Chutney",
+    description: "Crispy rice and lentil crepe with spiced potato filling",
+    calories: 370,
+    protein: 10,
+    carbs: 55,
+    fats: 14,
+    type: "vegan",
+    tags: ["energy", "breakfast", "vegan"],
+    image: "🫓",
+  },
+
+  // ===== BREAKFAST =====
+  {
+    id: 38,
+    name: "Greek Yogurt Parfait",
+    description: "Layered greek yogurt with granola, honey, and fresh fruits",
+    calories: 340,
+    protein: 20,
+    carbs: 42,
+    fats: 10,
+    type: "vegetarian",
+    tags: ["balanced", "breakfast", "general-health"],
+    image: "🍨",
+  },
+  {
+    id: 39,
+    name: "Avocado Toast with Poached Eggs",
+    description: "Whole grain toast with smashed avocado and perfectly poached eggs",
+    calories: 380,
+    protein: 18,
+    carbs: 30,
+    fats: 22,
+    type: "vegetarian",
+    tags: ["balanced", "breakfast", "energy"],
+    image: "🥑",
+  },
+
+  // ===== SNACKS =====
+  {
+    id: 40,
+    name: "Protein Energy Balls",
+    description: "No-bake balls with oats, protein powder, peanut butter, and dark chocolate",
+    calories: 200,
+    protein: 12,
+    carbs: 22,
+    fats: 8,
+    type: "vegetarian",
+    tags: ["snack", "energy", "muscle-gain"],
+    image: "🍫",
   },
 ];
 
@@ -227,15 +537,17 @@ export function generateRecommendations(profile: HealthProfile): MealRecommendat
 
     if (pref === "vegan") return meal.type === "vegan";
     if (pref === "vegetarian") return meal.type === "vegetarian" || meal.type === "vegan";
-    if (pref === "pescatarian") return meal.type === "pescatarian";
-    if (pref === "non-vegetarian") return meal.type === "non-vegetarian"; // Only non-veg meals
+    if (pref === "pescatarian") return meal.type === "pescatarian" || meal.type === "vegetarian" || meal.type === "vegan";
+    if (pref === "keto") return meal.tags.includes("keto") || meal.tags.includes("low-carb");
+    if (pref === "paleo") return meal.tags.includes("paleo") || (meal.carbs < 30 && meal.protein > 20);
+    if (pref === "non-vegetarian") return true; // All meals allowed
 
     return true; // No preference
   });
 
   // Filter by health goal
   const goal = profile.healthGoal.toLowerCase();
-  filteredMeals = filteredMeals.filter((meal) => {
+  const goalFilteredMeals = filteredMeals.filter((meal) => {
     if (goal === "weight-loss") {
       return meal.calories < 400 || meal.tags.includes("weight-loss");
     }
@@ -245,34 +557,69 @@ export function generateRecommendations(profile: HealthProfile): MealRecommendat
     if (goal === "energy") {
       return meal.tags.includes("energy") || meal.carbs > 50;
     }
+    if (goal === "maintenance") {
+      return meal.calories >= 350 && meal.calories <= 550;
+    }
     return true; // General health - all meals OK
   });
+
+  // Use goal-filtered meals if enough results, otherwise use diet-filtered
+  if (goalFilteredMeals.length >= 3) {
+    filteredMeals = goalFilteredMeals;
+  }
 
   // Filter by activity level (adjust calorie range)
   const activity = profile.activityLevel.toLowerCase();
   if (activity.includes("sedentary") || activity.includes("light")) {
-    filteredMeals = filteredMeals.filter((meal) => meal.calories < 500);
+    const activityFiltered = filteredMeals.filter((meal) => meal.calories < 500);
+    if (activityFiltered.length >= 3) filteredMeals = activityFiltered;
   } else if (activity.includes("very-active")) {
-    filteredMeals = filteredMeals.filter((meal) => meal.calories > 350);
+    const activityFiltered = filteredMeals.filter((meal) => meal.calories > 350);
+    if (activityFiltered.length >= 3) filteredMeals = activityFiltered;
   }
 
   // Remove meals with allergens
   if (profile.allergies) {
-    const allergyKeywords = profile.allergies.toLowerCase().split(",").map(a => a.trim());
-    filteredMeals = filteredMeals.filter((meal) => {
-      const mealLower = `${meal.name} ${meal.description}`.toLowerCase();
-      return !allergyKeywords.some(allergen =>
-        mealLower.includes(allergen) ||
-        (allergen.includes("dairy") && mealLower.includes("cheese")) ||
-        (allergen.includes("gluten") && mealLower.includes("pasta"))
-      );
-    });
+    const allergyKeywords = profile.allergies.toLowerCase().split(",").map(a => a.trim()).filter(a => a.length > 0);
+    if (allergyKeywords.length > 0) {
+      filteredMeals = filteredMeals.filter((meal) => {
+        const mealLower = `${meal.name} ${meal.description}`.toLowerCase();
+        return !allergyKeywords.some(allergen =>
+          mealLower.includes(allergen) ||
+          (allergen.includes("dairy") && (mealLower.includes("cheese") || mealLower.includes("paneer") || mealLower.includes("yogurt") || mealLower.includes("butter"))) ||
+          (allergen.includes("gluten") && (mealLower.includes("pasta") || mealLower.includes("bread") || mealLower.includes("toast") || mealLower.includes("roti") || mealLower.includes("naan") || mealLower.includes("wrap"))) ||
+          (allergen.includes("nut") && (mealLower.includes("peanut") || mealLower.includes("almond") || mealLower.includes("cashew"))) ||
+          (allergen.includes("seafood") && (mealLower.includes("shrimp") || mealLower.includes("salmon") || mealLower.includes("fish"))) ||
+          (allergen.includes("egg") && mealLower.includes("egg")) ||
+          (allergen.includes("soy") && mealLower.includes("tofu"))
+        );
+      });
+    }
   }
 
   // Sort by relevance (prioritize meals that match goal)
   filteredMeals.sort((a, b) => {
-    const aScore = a.tags.includes(goal) ? 1 : 0;
-    const bScore = b.tags.includes(goal) ? 1 : 0;
+    let aScore = 0;
+    let bScore = 0;
+
+    // Goal match
+    if (a.tags.includes(goal)) aScore += 3;
+    if (b.tags.includes(goal)) bScore += 3;
+
+    // Dietary preference match in tags
+    const pref = profile.dietaryPreference.toLowerCase();
+    if (a.tags.includes(pref)) aScore += 2;
+    if (b.tags.includes(pref)) bScore += 2;
+
+    // Activity level alignment
+    if (activity.includes("very-active") || activity.includes("active")) {
+      if (a.calories > 400) aScore += 1;
+      if (b.calories > 400) bScore += 1;
+    } else if (activity.includes("sedentary")) {
+      if (a.calories < 400) aScore += 1;
+      if (b.calories < 400) bScore += 1;
+    }
+
     return bScore - aScore;
   });
 
@@ -281,8 +628,9 @@ export function generateRecommendations(profile: HealthProfile): MealRecommendat
 
   // If we don't have enough recommendations, add some balanced meals
   if (recommendations.length < 5) {
+    const existing = new Set(recommendations.map(m => m.id));
     const balanced = mealDatabase
-      .filter(m => !recommendations.includes(m))
+      .filter(m => !existing.has(m.id))
       .slice(0, 5 - recommendations.length);
     recommendations = [...recommendations, ...balanced];
   }

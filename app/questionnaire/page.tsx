@@ -21,6 +21,7 @@ interface HealthProfile {
 export default function QuestionnairePage() {
   const router = useRouter();
   const [step, setStep] = useState(1);
+  const [stepErrors, setStepErrors] = useState<string[]>([]);
   const [formData, setFormData] = useState<HealthProfile>({
     age: "",
     gender: "",
@@ -38,13 +39,51 @@ export default function QuestionnairePage() {
 
   const totalSteps = 4;
 
+  const validateStep = (currentStep: number): string[] => {
+    const errors: string[] = [];
+
+    switch (currentStep) {
+      case 1:
+        if (!formData.age || parseInt(formData.age) < 10 || parseInt(formData.age) > 120) {
+          errors.push("Please enter a valid age (10-120)");
+        }
+        if (!formData.gender) errors.push("Please select your gender");
+        if (!formData.height || parseInt(formData.height) < 100 || parseInt(formData.height) > 250) {
+          errors.push("Please enter a valid height (100-250 cm)");
+        }
+        if (!formData.weight || parseInt(formData.weight) < 30 || parseInt(formData.weight) > 300) {
+          errors.push("Please enter a valid weight (30-300 kg)");
+        }
+        break;
+      case 2:
+        if (!formData.activityLevel) errors.push("Please select your activity level");
+        if (!formData.healthGoal) errors.push("Please select your health goal");
+        if (!formData.mealsPerDay) errors.push("Please select meals per day");
+        break;
+      case 3:
+        if (!formData.dietaryPreference) errors.push("Please select your dietary preference");
+        break;
+      case 4:
+        if (!formData.budget) errors.push("Please select your budget preference");
+        if (!formData.cookingPreference) errors.push("Please select your cooking preference");
+        break;
+    }
+
+    return errors;
+  };
+
   const handleNext = () => {
+    const errors = validateStep(step);
+    setStepErrors(errors);
+    if (errors.length > 0) return;
+
     if (step < totalSteps) {
       setStep(step + 1);
     }
   };
 
   const handlePrevious = () => {
+    setStepErrors([]);
     if (step > 1) {
       setStep(step - 1);
     }
@@ -52,6 +91,10 @@ export default function QuestionnairePage() {
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
+    const errors = validateStep(step);
+    setStepErrors(errors);
+    if (errors.length > 0) return;
+
     // Save health profile to localStorage
     localStorage.setItem("healthProfile", JSON.stringify(formData));
     // Redirect to recommendations
@@ -60,6 +103,10 @@ export default function QuestionnairePage() {
 
   const updateField = (field: keyof HealthProfile, value: string) => {
     setFormData({ ...formData, [field]: value });
+    // Clear errors when user starts editing
+    if (stepErrors.length > 0) {
+      setStepErrors([]);
+    }
   };
 
   return (
@@ -87,6 +134,22 @@ export default function QuestionnairePage() {
         </div>
 
         <div className="bg-white dark:bg-gray-800 rounded-xl shadow-lg p-8 border border-gray-200 dark:border-gray-700">
+          {/* Validation Errors */}
+          {stepErrors.length > 0 && (
+            <div className="mb-6 p-4 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800 rounded-lg">
+              <p className="font-semibold text-red-800 dark:text-red-200 text-sm mb-2">
+                Please fix the following:
+              </p>
+              <ul className="list-disc list-inside space-y-1">
+                {stepErrors.map((error, index) => (
+                  <li key={index} className="text-sm text-red-700 dark:text-red-300">
+                    {error}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          )}
+
           <form onSubmit={handleSubmit}>
             {/* Step 1: Basic Information */}
             {step === 1 && (
@@ -96,11 +159,10 @@ export default function QuestionnairePage() {
                 <div className="grid md:grid-cols-2 gap-6">
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Age
+                      Age <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
-                      required
                       value={formData.age}
                       onChange={(e) => updateField("age", e.target.value)}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -112,10 +174,9 @@ export default function QuestionnairePage() {
 
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Gender
+                      Gender <span className="text-red-500">*</span>
                     </label>
                     <select
-                      required
                       value={formData.gender}
                       onChange={(e) => updateField("gender", e.target.value)}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -130,11 +191,10 @@ export default function QuestionnairePage() {
 
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Height (cm)
+                      Height (cm) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
-                      required
                       value={formData.height}
                       onChange={(e) => updateField("height", e.target.value)}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -146,11 +206,10 @@ export default function QuestionnairePage() {
 
                   <div>
                     <label className="block text-sm font-medium mb-2">
-                      Weight (kg)
+                      Weight (kg) <span className="text-red-500">*</span>
                     </label>
                     <input
                       type="number"
-                      required
                       value={formData.weight}
                       onChange={(e) => updateField("weight", e.target.value)}
                       className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -170,10 +229,9 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Activity Level
+                    Activity Level <span className="text-red-500">*</span>
                   </label>
                   <select
-                    required
                     value={formData.activityLevel}
                     onChange={(e) => updateField("activityLevel", e.target.value)}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -189,10 +247,9 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Health Goal
+                    Health Goal <span className="text-red-500">*</span>
                   </label>
                   <select
-                    required
                     value={formData.healthGoal}
                     onChange={(e) => updateField("healthGoal", e.target.value)}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -208,10 +265,9 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Meals Per Day
+                    Meals Per Day <span className="text-red-500">*</span>
                   </label>
                   <select
-                    required
                     value={formData.mealsPerDay}
                     onChange={(e) => updateField("mealsPerDay", e.target.value)}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -233,10 +289,9 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Dietary Preference
+                    Dietary Preference <span className="text-red-500">*</span>
                   </label>
                   <select
-                    required
                     value={formData.dietaryPreference}
                     onChange={(e) => updateField("dietaryPreference", e.target.value)}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -287,10 +342,9 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Budget Preference
+                    Budget Preference <span className="text-red-500">*</span>
                   </label>
                   <select
-                    required
                     value={formData.budget}
                     onChange={(e) => updateField("budget", e.target.value)}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
@@ -304,10 +358,9 @@ export default function QuestionnairePage() {
 
                 <div>
                   <label className="block text-sm font-medium mb-2">
-                    Cooking Preference
+                    Cooking Preference <span className="text-red-500">*</span>
                   </label>
                   <select
-                    required
                     value={formData.cookingPreference}
                     onChange={(e) => updateField("cookingPreference", e.target.value)}
                     className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"

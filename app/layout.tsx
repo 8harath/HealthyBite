@@ -1,12 +1,14 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { ThemeProvider } from "@/components/ThemeProvider";
+import { ToastProvider } from "@/components/Toast";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 export const metadata: Metadata = {
   title: "HealthyBite - Personalized Meal Plans & Subscriptions",
-  description: "Get personalized meal recommendations and hassle-free food delivery subscriptions tailored to your health goals.",
+  description: "Get personalized meal recommendations and hassle-free food delivery subscriptions tailored to your health goals. AI-powered nutrition for a healthier you.",
+  keywords: ["meal plans", "healthy eating", "nutrition", "personalized diet", "meal delivery", "health goals"],
 };
 
 export default function RootLayout({
@@ -23,13 +25,15 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <div className="flex flex-col min-h-screen">
-            <Header />
-            <main className="flex-grow">
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <ToastProvider>
+            <div className="flex flex-col min-h-screen">
+              <Header />
+              <main className="flex-grow">
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </ToastProvider>
         </ThemeProvider>
       </body>
     </html>
