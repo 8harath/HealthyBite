@@ -15,6 +15,7 @@ describe("Health Profile Validation", () => {
     budget: "moderate",
     cookingPreference: "both",
     medicalConditions: "",
+    location: "tamil-nadu",
   };
 
   it("accepts a valid health profile", () => {

@@ -33,6 +33,7 @@ describe('LLM Service - Groq API Integration', () => {
     budget: 'medium',
     cookingPreference: 'moderate',
     medicalConditions: '',
+    location: 'tamil-nadu',
   };
 
   describe('Configuration Tests', () => {
@@ -305,6 +306,38 @@ describe('LLM Service - Groq API Integration', () => {
       expect(result.insights.nutritionalFocus.length).toBeGreaterThan(0);
 
       console.log('✓ Health insights validation passed');
+    }, 30000);
+
+    it('should include ingredients, fun facts and tips when AI is used', async () => {
+      const result = await generateMealRecommendationsWithLLM(sampleProfile);
+
+      if (!result.usedFallback) {
+        result.meals.forEach((meal) => {
+          // ingredients should be an array
+          expect(Array.isArray(meal.ingredients)).toBe(true);
+          if (meal.ingredients && meal.ingredients.length > 0) {
+            meal.ingredients.forEach((ing) => {
+              expect(typeof ing.name).toBe('string');
+              expect(typeof ing.amount).toBe('string');
+            });
+          }
+          // instructions should be an array
+          expect(Array.isArray(meal.instructions)).toBe(true);
+          // fun facts should be an array
+          expect(Array.isArray(meal.funFacts)).toBe(true);
+          // tips should be an array
+          expect(Array.isArray(meal.tips)).toBe(true);
+        });
+        console.log('✓ Extended meal fields (ingredients, funFacts, tips) validated');
+      } else {
+        // Fallback meals have optional fields — arrays or undefined
+        result.meals.forEach((meal) => {
+          if (meal.ingredients !== undefined) expect(Array.isArray(meal.ingredients)).toBe(true);
+          if (meal.funFacts !== undefined) expect(Array.isArray(meal.funFacts)).toBe(true);
+          if (meal.tips !== undefined) expect(Array.isArray(meal.tips)).toBe(true);
+        });
+        console.log('✓ Fallback meals: optional extended fields are arrays when present');
+      }
     }, 30000);
   });
 });
