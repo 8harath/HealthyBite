@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS public.health_profiles (
   budget TEXT NOT NULL,
   cooking_preference TEXT NOT NULL,
   medical_conditions TEXT DEFAULT '',
+  location TEXT DEFAULT 'other-india',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(user_id)
