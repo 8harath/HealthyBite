@@ -57,13 +57,38 @@ export async function GET() {
         .single(),
       supabase
         .from("health_profiles")
-        .select("location")
+        .select("*")
         .eq("user_id", user.id)
         .single(),
     ]);
 
+    const currentLocation = profile?.location || "other-india";
+    const currentCuisinePreference = profile?.cuisine_preference || "local";
+
     if (!rec) {
-      return NextResponse.json({ success: true, recommendations: null });
+      return NextResponse.json({
+        success: true,
+        recommendations: null,
+        location: currentLocation,
+        cuisinePreference: currentCuisinePreference,
+      });
+    }
+
+    const recommendationCreatedAt = new Date(rec.created_at).getTime();
+    const profileUpdatedAt = profile?.updated_at ? new Date(profile.updated_at).getTime() : 0;
+    const profileChangedSinceRecommendation =
+      Number.isFinite(profileUpdatedAt) &&
+      Number.isFinite(recommendationCreatedAt) &&
+      profileUpdatedAt > recommendationCreatedAt;
+
+    if (profileChangedSinceRecommendation) {
+      return NextResponse.json({
+        success: true,
+        recommendations: null,
+        location: currentLocation,
+        cuisinePreference: currentCuisinePreference,
+        stale: true,
+      });
     }
 
     return NextResponse.json({
@@ -72,7 +97,8 @@ export async function GET() {
       insights: rec.insights,
       source: rec.source,
       generatedAt: rec.created_at,
-      location: profile?.location || "other-india",
+      location: currentLocation,
+      cuisinePreference: currentCuisinePreference,
     });
   } catch (error) {
     logger.error("Recommendations GET error", { error: error instanceof Error ? error.message : "Unknown" });
@@ -94,6 +120,16 @@ export async function POST(request: NextRequest) {
         },
         { status: 429 }
       );
+    }
+
+    let requestOverrides: Partial<Pick<HealthProfile, "location" | "cuisinePreference">> = {};
+    try {
+      const requestText = await request.text();
+      if (requestText.trim().length > 0) {
+        requestOverrides = JSON.parse(requestText) as Partial<Pick<HealthProfile, "location" | "cuisinePreference">>;
+      }
+    } catch {
+      requestOverrides = {};
     }
 
     const supabase = await createClient();
@@ -131,16 +167,17 @@ export async function POST(request: NextRequest) {
       budget: dbProfile.budget,
       cookingPreference: dbProfile.cooking_preference,
       medicalConditions: dbProfile.medical_conditions || "",
-      location: dbProfile.location || "other-india",
+      location: requestOverrides.location || dbProfile.location || "other-india",
+      cuisinePreference: requestOverrides.cuisinePreference || dbProfile.cuisine_preference || "local",
     };
 
     let recommendations;
     let insights;
     let usedFallback = false;
-    let source = "groq";
+    let source = "fallback";
 
     if (!isLLMConfigured()) {
-      logger.warn("GROQ_API_KEY not configured - using fallback engine");
+      logger.warn("No LLM API key configured (GEMINI_API_KEY/GROQ_API_KEY) - using fallback engine");
       const recs = generateRecommendations(healthProfile);
       const height = parseFloat(healthProfile.height);
       const weight = parseFloat(healthProfile.weight);
@@ -172,7 +209,7 @@ export async function POST(request: NextRequest) {
       recommendations = result.meals;
       insights = result.insights;
       usedFallback = result.usedFallback || false;
-      source = usedFallback ? "fallback" : "groq";
+      source = usedFallback ? "fallback" : (result.provider || "groq");
     }
 
     // Store recommendations in DB
@@ -194,6 +231,7 @@ export async function POST(request: NextRequest) {
         : "AI-powered recommendations generated successfully",
       usedFallback,
       location: healthProfile.location,
+      cuisinePreference: healthProfile.cuisinePreference || "local",
     });
   } catch (error) {
     logger.error("Recommendations API error", { error: error instanceof Error ? error.message : "Unknown" });
