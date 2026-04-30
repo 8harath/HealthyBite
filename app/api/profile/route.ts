@@ -36,13 +36,33 @@ export async function POST(request: NextRequest) {
       cooking_preference: parsed.data.cookingPreference,
       medical_conditions: parsed.data.medicalConditions,
       location: parsed.data.location,
+      cuisine_preference: parsed.data.cuisinePreference,
     };
 
-    const { data, error: dbError } = await supabase
+    let { data, error: dbError } = await supabase
       .from("health_profiles")
       .upsert(profileData, { onConflict: "user_id" })
       .select()
       .single();
+
+    if (dbError?.message?.includes("cuisine_preference")) {
+      const legacyProfileData = {
+        ...profileData,
+      };
+      delete (legacyProfileData as { cuisine_preference?: string }).cuisine_preference;
+
+      const legacyResult = await supabase
+        .from("health_profiles")
+        .upsert(legacyProfileData, { onConflict: "user_id" })
+        .select()
+        .single();
+
+      data = legacyResult.data;
+      dbError = legacyResult.error;
+      if (!dbError) {
+        logger.warn("Profile saved without cuisine_preference because DB schema is outdated", { userId: user.id });
+      }
+    }
 
     if (dbError) {
       logger.error("Profile save error", { userId: user.id, error: dbError.message });
