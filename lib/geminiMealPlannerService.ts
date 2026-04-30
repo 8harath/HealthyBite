@@ -116,6 +116,8 @@ function createMealPlanPrompt(
 - Activity Level: ${profile.activityLevel}
 - Health Goal: ${profile.healthGoal}
 - Dietary Preference: ${profile.dietaryPreference}
+- Location: ${profile.location}
+- Preferred Cuisine: ${profile.cuisinePreference || "local"}
 - Allergies: ${profile.allergies || "None"}
 - Meals per day: ${mealsPerDay}
 - Budget: ${profile.budget}
@@ -126,6 +128,7 @@ function createMealPlanPrompt(
 - ${includeSnacks ? "Include healthy snacks" : "No snacks"}
 - Ensure nutritional balance
 - Variety in meals (no repetition)
+- Prefer meals that match the user's location and preferred cuisine
 - Match dietary preferences
 - Align with health goals
 
