@@ -4,6 +4,8 @@ import { useEffect, useState, useCallback } from "react";
 import Link from "next/link";
 import type { MealRecommendation } from "@/lib/recommendationEngine";
 
+const PROFILE_OVERRIDE_STORAGE_KEY = "healthybite-profile-overrides";
+
 interface Insights {
   bmi: number;
   bmiCategory: string;
@@ -99,6 +101,24 @@ export default function RecommendationsPage() {
   const [usedFallback, setUsedFallback] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [userLocation, setUserLocation] = useState<string>("other-india");
+  const [userCuisinePreference, setUserCuisinePreference] = useState<string>("local");
+
+  const readProfileOverrides = useCallback((): { location?: string; cuisinePreference?: string } => {
+    try {
+      const raw = window.localStorage.getItem(PROFILE_OVERRIDE_STORAGE_KEY);
+      if (!raw) {
+        return {};
+      }
+
+      const parsed = JSON.parse(raw) as { location?: string; cuisinePreference?: string };
+      return {
+        location: parsed.location,
+        cuisinePreference: parsed.cuisinePreference,
+      };
+    } catch {
+      return {};
+    }
+  }, []);
 
   const loadCachedRecommendations = useCallback(async () => {
     try {
@@ -108,15 +128,17 @@ export default function RecommendationsPage() {
         if (data.recommendations) {
           setRecommendations(data.recommendations);
           setInsights(data.insights || null);
-          setUsedFallback(data.source === "fallback");
+          const cachedUsedFallback = data.source === "fallback";
+          setUsedFallback(cachedUsedFallback);
           if (data.location) setUserLocation(data.location);
-          return true;
+          if (data.cuisinePreference) setUserCuisinePreference(data.cuisinePreference);
+          return { hasCached: true, usedFallback: cachedUsedFallback };
         }
       }
     } catch {
       // No cached data, will generate new
     }
-    return false;
+    return { hasCached: false, usedFallback: false };
   }, []);
 
   const generateRecommendations = useCallback(async (isRegenerate = false) => {
@@ -125,8 +147,13 @@ export default function RecommendationsPage() {
         setRegenerating(true);
       }
       setError(null);
+      const profileOverrides = readProfileOverrides();
 
-      const response = await fetch("/api/recommendations", { method: "POST" });
+      const response = await fetch("/api/recommendations", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(profileOverrides),
+      });
 
       if (!response.ok) {
         const errorData = await response.json().catch(() => ({}));
@@ -138,18 +165,19 @@ export default function RecommendationsPage() {
       setInsights(data.insights || null);
       setUsedFallback(data.usedFallback || false);
       if (data.location) setUserLocation(data.location);
+      if (data.cuisinePreference) setUserCuisinePreference(data.cuisinePreference);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Failed to generate recommendations. Please try again.");
     } finally {
       setLoading(false);
       setRegenerating(false);
     }
-  }, []);
+  }, [readProfileOverrides]);
 
   useEffect(() => {
     const init = async () => {
-      const hasCached = await loadCachedRecommendations();
-      if (hasCached && !usedFallback) {
+      const { hasCached, usedFallback: cachedUsedFallback } = await loadCachedRecommendations();
+      if (hasCached && !cachedUsedFallback) {
         // Only use cache if it was AI-generated; stale fallback should be regenerated
         setLoading(false);
       } else {
@@ -158,8 +186,12 @@ export default function RecommendationsPage() {
       }
     };
     init();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [generateRecommendations, loadCachedRecommendations]);
+
+  const cuisinePreferenceLabel =
+    userCuisinePreference === "local"
+      ? `Local cuisine from ${LOCATION_LABELS[userLocation]?.region || "your region"}`
+      : LOCATION_LABELS[userCuisinePreference]?.cuisine || "Custom cuisine preference";
 
   if (loading) {
     return <LoadingSkeleton />;
@@ -214,6 +246,11 @@ export default function RecommendationsPage() {
               </Link>
             </div>
           )}
+
+          <div className="mt-3 inline-flex items-center gap-2 px-4 py-2 bg-sky-50 dark:bg-sky-900/20 border border-sky-200 dark:border-sky-800 rounded-full text-sm text-sky-800 dark:text-sky-300">
+            <span className="font-semibold">Cuisine Preference:</span>
+            <span>{cuisinePreferenceLabel}</span>
+          </div>
 
           {usedFallback && (
             <div className="mt-3 inline-block px-4 py-2 bg-yellow-100 dark:bg-yellow-900/30 text-yellow-800 dark:text-yellow-200 rounded-lg text-sm">
@@ -336,6 +373,12 @@ export default function RecommendationsPage() {
                         <p className="font-bold">{meal.fats}g</p>
                       </div>
                     </div>
+                    {(meal as any).actualPrice && (
+                      <div className="mb-4 p-3 bg-green-50 dark:bg-green-900/20 rounded-lg border border-green-200 dark:border-green-800">
+                        <p className="text-xs text-gray-600 dark:text-gray-400">Estimated Price</p>
+                        <p className="text-lg font-bold text-green-600 dark:text-green-400">₹{(meal as any).actualPrice}</p>
+                      </div>
+                    )}
                     <div className="flex flex-wrap gap-2 mb-3">
                       {meal.tags.slice(0, 3).map((tag) => (
                         <span key={tag} className="px-2 py-1 text-xs bg-primary-100 dark:bg-primary-900/30 text-primary-700 dark:text-primary-300 rounded-full">
