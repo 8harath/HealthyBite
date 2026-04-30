@@ -24,10 +24,14 @@ CREATE TABLE IF NOT EXISTS public.health_profiles (
   cooking_preference TEXT NOT NULL,
   medical_conditions TEXT DEFAULT '',
   location TEXT DEFAULT 'other-india',
+  cuisine_preference TEXT DEFAULT 'local',
   created_at TIMESTAMPTZ DEFAULT NOW(),
   updated_at TIMESTAMPTZ DEFAULT NOW(),
   UNIQUE(user_id)
 );
+
+ALTER TABLE public.health_profiles
+  ADD COLUMN IF NOT EXISTS cuisine_preference TEXT DEFAULT 'local';
 
 -- ============================================================
 -- TABLE: recommendations
