@@ -17,6 +17,13 @@ export const healthProfileSchema = z.object({
   activityLevel: z.string().min(1, "Activity level is required"),
   healthGoal: z.string().min(1, "Health goal is required"),
   dietaryPreference: z.string().min(1, "Dietary preference is required"),
+  cuisinePreference: z
+    .string()
+    .optional()
+    .transform((value) => {
+      const normalized = value?.trim();
+      return normalized && normalized.length > 0 ? normalized : "local";
+    }),
   allergies: z.string().default(""),
   mealsPerDay: z.string().min(1, "Meals per day is required"),
   budget: z.string().min(1, "Budget preference is required"),

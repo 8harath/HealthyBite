@@ -10,6 +10,7 @@ describe("Health Profile Validation", () => {
     activityLevel: "moderate",
     healthGoal: "weight-loss",
     dietaryPreference: "vegetarian",
+    cuisinePreference: "local",
     allergies: "",
     mealsPerDay: "3",
     budget: "moderate",
@@ -21,6 +22,14 @@ describe("Health Profile Validation", () => {
   it("accepts a valid health profile", () => {
     const result = healthProfileSchema.safeParse(validProfile);
     expect(result.success).toBe(true);
+  });
+
+  it("defaults cuisine preference to local when omitted", () => {
+    const result = healthProfileSchema.safeParse({ ...validProfile, cuisinePreference: undefined });
+    expect(result.success).toBe(true);
+    if (result.success) {
+      expect(result.data.cuisinePreference).toBe("local");
+    }
   });
 
   it("rejects invalid age", () => {
