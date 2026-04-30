@@ -3,6 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 
+const PROFILE_OVERRIDE_STORAGE_KEY = "healthybite-profile-overrides";
+
 // Map state names from Nominatim reverse geocoding to app location codes
 function mapStateToLocationCode(state: string): string {
   const normalized = state.trim().toLowerCase();
@@ -51,6 +53,7 @@ interface HealthProfile {
   activityLevel: string;
   healthGoal: string;
   dietaryPreference: string;
+  cuisinePreference: string;
   allergies: string;
   mealsPerDay: string;
   budget: string;
@@ -76,6 +79,7 @@ export default function QuestionnairePage() {
     activityLevel: "",
     healthGoal: "",
     dietaryPreference: "",
+    cuisinePreference: "",
     allergies: "",
     mealsPerDay: "",
     budget: "",
@@ -102,6 +106,7 @@ export default function QuestionnairePage() {
           errors.push("Please enter a valid weight (30-300 kg)");
         }
         if (!formData.location) errors.push("Please select your location");
+        if (!formData.cuisinePreference) errors.push("Please select your cuisine preference");
         break;
       case 2:
         if (!formData.activityLevel) errors.push("Please select your activity level");
@@ -158,6 +163,15 @@ export default function QuestionnairePage() {
         setSubmitting(false);
         return;
       }
+
+      localStorage.setItem(
+        PROFILE_OVERRIDE_STORAGE_KEY,
+        JSON.stringify({
+          location: formData.location,
+          cuisinePreference: formData.cuisinePreference,
+          savedAt: new Date().toISOString(),
+        })
+      );
 
       // Show transition animation before navigating
       setShowTransition(true);
@@ -460,6 +474,61 @@ export default function QuestionnairePage() {
                   </select>
                   <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
                     We use this to recommend authentic regional cuisine that suits your palate
+                  </p>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-medium mb-2">
+                    Preferred Cuisine <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    value={formData.cuisinePreference}
+                    onChange={(e) => updateField("cuisinePreference", e.target.value)}
+                    className="w-full px-4 py-3 rounded-lg border border-gray-300 dark:border-gray-600 bg-white dark:bg-gray-900 focus:ring-2 focus:ring-primary-500 focus:border-transparent outline-none"
+                  >
+                    <option value="">Select cuisine preference</option>
+                    <option value="local">Local cuisine from my region</option>
+                    <optgroup label="South India">
+                      <option value="tamil-nadu">Tamil Cuisine</option>
+                      <option value="kerala">Kerala Cuisine</option>
+                      <option value="karnataka">Karnataka Cuisine</option>
+                      <option value="andhra-pradesh">Andhra Cuisine</option>
+                      <option value="telangana">Telangana Cuisine</option>
+                    </optgroup>
+                    <optgroup label="North India">
+                      <option value="delhi">North Indian / Mughlai Cuisine</option>
+                      <option value="uttar-pradesh">Awadhi / UP Cuisine</option>
+                      <option value="punjab">Punjabi Cuisine</option>
+                      <option value="haryana">Haryanvi Cuisine</option>
+                      <option value="rajasthan">Rajasthani Cuisine</option>
+                      <option value="himachal-pradesh">Himachali Cuisine</option>
+                      <option value="jammu-kashmir">Kashmiri Cuisine</option>
+                      <option value="uttarakhand">Garhwali / Kumaoni Cuisine</option>
+                    </optgroup>
+                    <optgroup label="East India">
+                      <option value="west-bengal">Bengali Cuisine</option>
+                      <option value="odisha">Odia Cuisine</option>
+                      <option value="bihar">Bihari Cuisine</option>
+                      <option value="jharkhand">Jharkhand Cuisine</option>
+                      <option value="assam">Assamese Cuisine</option>
+                      <option value="northeast">Northeast Indian Cuisine</option>
+                    </optgroup>
+                    <optgroup label="West India">
+                      <option value="maharashtra">Maharashtrian Cuisine</option>
+                      <option value="gujarat">Gujarati Cuisine</option>
+                      <option value="goa">Goan Cuisine</option>
+                    </optgroup>
+                    <optgroup label="Central India">
+                      <option value="madhya-pradesh">Malwa / Bundelkhandi Cuisine</option>
+                      <option value="chhattisgarh">Chhattisgarhi Cuisine</option>
+                    </optgroup>
+                    <optgroup label="Other">
+                      <option value="other-india">Indian Cuisine (Any Region)</option>
+                      <option value="international">International Cuisine</option>
+                    </optgroup>
+                  </select>
+                  <p className="mt-1 text-xs text-gray-500 dark:text-gray-400">
+                    Choose local cuisine or another regional style you prefer us to prioritize.
                   </p>
                 </div>
               </div>
