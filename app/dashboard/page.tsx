@@ -19,6 +19,8 @@ interface HealthProfile {
   budget: string;
   cooking_preference: string;
   medical_conditions: string;
+  location?: string;
+  cuisine_preference?: string;
 }
 
 interface SubscriptionData {
@@ -226,6 +228,13 @@ export default function DashboardPage() {
                     { label: "Activity", value: profile.activity_level },
                     { label: "Cooking", value: profile.cooking_preference },
                     { label: "Budget", value: profile.budget },
+                    { label: "Location", value: profile.location || "Not set" },
+                    {
+                      label: "Cuisine",
+                      value: profile.cuisine_preference === "local"
+                        ? "Local cuisine"
+                        : (profile.cuisine_preference || "local").replace(/-/g, " "),
+                    },
                     { label: "Allergies", value: profile.allergies || "None" },
                     { label: "Conditions", value: profile.medical_conditions || "None" },
                   ].map((item) => (
