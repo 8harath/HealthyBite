@@ -120,7 +120,9 @@ scripts/
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Yes | Your Supabase anon/public key |
 | `GROQ_API_KEY` | No | Groq API key for AI recommendations |
 
-> If `GROQ_API_KEY` is not set, the app automatically uses the rule-based fallback engine. All other features work normally.
+> **Note:** If `GROQ_API_KEY` is not set, the app automatically uses the rule-based fallback engine. All other features work normally.
+> 
+> **Tip:** Environment variables starting with `NEXT_PUBLIC_` are exposed to the browser; keep other keys private.
 
 ## Scripts
 
