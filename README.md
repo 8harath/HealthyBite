@@ -202,11 +202,13 @@ docker-compose up
 
 ## Current Limitations
 
-- Rate limiting is in-memory and resets on restart (not suitable for horizontal scaling)
-- Subscription and payment flows are simulated — no real payment processing
-- Gemini integration (meal planning, recipes, shopping lists) is prototype-only with no auth or DB persistence
-- The weekly meal planner generates plans from cached recommendations only
-- No email sending for forgot-password in local dev (requires Supabase SMTP config)
+- **Rate limiting** — In-memory store that resets on restart; not suitable for horizontal scaling
+- **Payment flows** — Subscription and payment are simulated; no real payment processing
+- **Gemini integration** — Meal planning, recipes, shopping lists are prototype-only with no auth or DB persistence
+- **Meal planner** — Weekly planner generates plans from cached recommendations only
+- **Email support** — Forgot-password doesn't send emails in local dev (requires Supabase SMTP config)
+
+**Future improvements:** Redis-backed rate limiting, Stripe integration, persistent Gemini features, and email notifications.
 
 ## License
 
