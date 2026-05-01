@@ -32,13 +32,14 @@ AI-powered personalized meal recommendation app. Enter your health profile and g
 
 | Layer | Technology |
 |---|---|
-| Framework | Next.js 15 App Router, TypeScript |
+| Framework | Next.js 15 App Router, TypeScript 5+ |
 | UI | React 18, Tailwind CSS, next-themes |
 | Auth + Database | Supabase (PostgreSQL with RLS, SSR cookies) |
 | AI — primary | Groq SDK — Llama 3.3 70B Versatile |
 | AI — prototype | Google Gemini 1.5 Flash (meal planning, recipes, shopping lists) |
 | Validation | Zod |
 | Testing | Vitest + jsdom |
+| Containerization | Docker & Docker Compose |
 
 ## Project Structure
 
