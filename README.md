@@ -26,6 +26,7 @@ AI-powered personalized meal recommendation app. Enter your health profile and g
 - **Subscription plans** — weekly / monthly / quarterly tiers with simulated payment
 - **Real authentication** — Supabase Auth with session-based cookies and route protection
 - **Dark mode** — system-aware with manual toggle
+- **Type-safe development** — Full TypeScript coverage with strict checks
 
 ## Tech Stack
 
