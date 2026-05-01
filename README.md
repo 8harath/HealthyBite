@@ -84,8 +84,9 @@ scripts/
 ### Prerequisites
 
 - Node.js 22.x, npm 10+
-- [Supabase](https://supabase.com) project (free tier works)
-- [Groq API key](https://console.groq.com) (free, optional — fallback engine is used if not set)
+- [Supabase](https://supabase.com) project (free tier works fine)
+- [Groq API key](https://console.groq.com) (free tier available; optional — fallback engine works without it)
+- Basic knowledge of environment variables and Git
 
 ### Setup
 
