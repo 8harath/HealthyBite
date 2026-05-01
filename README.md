@@ -156,6 +156,19 @@ Stored in Supabase recommendations table (JSONB)
 Recommendations page → Meal Detail page
 ```
 
+## Testing
+
+Run the test suite with:
+
+```bash
+npm test                  # Watch mode
+npm test -- --run        # Single run
+npm run test:groq        # Verify Groq API integration
+npm run test:fallback    # Test recommendation fallback engine
+```
+
+All tests are located in `__tests__/` and use Vitest + jsdom.
+
 ## Regional Cuisine Coverage
 
 The AI prompt maps 21 Indian regions to their authentic cuisine context:
