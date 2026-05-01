@@ -180,7 +180,9 @@ The AI prompt maps 21 Indian regions to their authentic cuisine context:
 
 The fallback engine additionally has curated regional meals for 12 states.
 
-## Docker
+## Deployment
+
+### Docker
 
 ```bash
 docker build \
